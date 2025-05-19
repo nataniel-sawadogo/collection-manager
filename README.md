@@ -1,4 +1,4 @@
-# CollectionManager
+# CollectionManager By *Nataniel Sawadogo*
 
 An Angular web app that allows the management of a collection of stamps and coins
 
