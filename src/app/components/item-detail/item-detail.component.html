@@ -1,0 +1,130 @@
+<div class="item-detail-container">
+  <div class="header-actions">
+    <button (click)="goBack()" class="back-button">
+      &larr; Back to List
+    </button>
+    
+    <div class="action-buttons" *ngIf="!isNew">
+      <button *ngIf="!isEditing" (click)="toggleEdit()" class="edit-button">
+        Edit Item
+      </button>
+      <button *ngIf="!isEditing" (click)="deleteItem()" class="delete-button">
+        Delete Item
+      </button>
+      <button *ngIf="isEditing" (click)="saveItem()" class="save-button" [disabled]="itemForm.invalid">
+        Save Changes
+      </button>
+      <button *ngIf="isEditing" (click)="toggleEdit()" class="cancel-button">
+        Cancel
+      </button>
+    </div>
+    
+    <div class="action-buttons" *ngIf="isNew">
+      <button (click)="saveItem()" class="save-button" [disabled]="itemForm.invalid">
+        Add Item
+      </button>
+      <button (click)="goBack()" class="cancel-button">
+        Cancel
+      </button>
+    </div>
+  </div>
+  
+  <div class="item-content">
+    <div *ngIf="!isEditing && item" class="view-mode">
+      <div class="item-header">
+        <h2>{{ item.name }}</h2>
+        <span class="category-badge">{{ item.category }}</span>
+        <span class="condition-badge" [ngClass]="item.condition">
+          {{ item.condition | titlecase }}
+        </span>
+      </div>
+      
+      <div class="item-body">
+        <div class="item-image">
+          <img [src]="item.imageUrl || '/api/placeholder/400/400'" [alt]="item.name">
+        </div>
+        
+        <div class="item-details">
+          <div class="detail-group">
+            <span class="label">Value:</span>
+            <span class="value">{{ item.value | currency }}</span>
+          </div>
+          
+          <div class="detail-group">
+            <span class="label">Acquisition Date:</span>
+            <span class="value">{{ item.acquisitionDate | date:'mediumDate' }}</span>
+          </div>
+          
+          <div class="detail-group">
+            <span class="label">Description:</span>
+            <p class="description">{{ item.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="isEditing" class="edit-mode">
+      <form [formGroup]="itemForm" (ngSubmit)="saveItem()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" formControlName="name">
+            <div *ngIf="itemForm.get('name')?.invalid && itemForm.get('name')?.touched" class="error-message">
+              Name is required and must be at least 3 characters
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="category">Category</label>
+            <input type="text" id="category" formControlName="category">
+            <div *ngIf="itemForm.get('category')?.invalid && itemForm.get('category')?.touched" class="error-message">
+              Category is required
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="acquisitionDate">Acquisition Date</label>
+            <input type="date" id="acquisitionDate" formControlName="acquisitionDate">
+            <div *ngIf="itemForm.get('acquisitionDate')?.invalid && itemForm.get('acquisitionDate')?.touched" class="error-message">
+              Valid date is required
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="value">Value ($)</label>
+            <input type="number" id="value" formControlName="value" min="0" step="0.01">
+            <div *ngIf="itemForm.get('value')?.invalid && itemForm.get('value')?.touched" class="error-message">
+              Value must be a positive number
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="condition">Condition</label>
+            <select id="condition" formControlName="condition">
+              <option value="mint">Mint</option>
+              <option value="good">Good</option>
+              <option value="fair">Fair</option>
+              <option value="poor">Poor</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="imageUrl">Image URL (optional)</label>
+            <input type="text" id="imageUrl" formControlName="imageUrl">
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="description">Description</label>
+            <textarea 
+              id="description" 
+              formControlName="description" 
+              rows="5"></textarea>
+            <div *ngIf="itemForm.get('description')?.invalid && itemForm.get('description')?.touched" class="error-message">
+              Description is required and must be at least 10 characters
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
